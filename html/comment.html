@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="../js/react.js"></script>
+    <script src="../js/JSXTransformer.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
+
+  </head>
+  <body>
+    <!-- 绑定内容 -->
+    <div id="content"></div>
+    <div id="example"></div>
+    <script type="text/jsx">
+    var data = [
+      {author: "hsh", text: "This is one comment by ***hsh***"},
+      {author: "www", text: "This is *another* comment by ***www***"}
+    ];
+      var converter = new Showdown.converter();
+      var Comment = React.createClass({
+        render: function() {
+          var rawMarkup = converter.makeHtml(this.props.children.toString());
+          return (
+            <div className="comment">
+              <h2 className="commentAuthor">
+                {this.props.author}
+              </h2>
+              <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
+            </div>
+          );
+        }
+      });
+
+      var CommentList = React.createClass({
+        render: function() {
+          var commentNodes = this.props.data.map(function (comment) {
+            return (
+              <Comment author={comment.author}>
+                {comment.text}
+              </Comment>
+            );
+          });
+          console.log(commentNodes);
+          return (
+            <div className="commentList">
+              {commentNodes}
+            </div>
+          );
+        }
+      });
+
+      var CommentForm = React.createClass({
+        render: function() {
+          return (
+            <div className="commentForm">
+              Hello, world! I am a CommentForm.
+            </div>
+          );
+        }
+      });
+
+      var CommentBox = React.createClass({
+        render: function() {
+          return (
+            <div className="commentBox">
+              <h1>Comments</h1>
+               <CommentList data={this.props.data} />
+              <CommentForm />
+            </div>
+          );
+        }
+      });
+      //props 传递
+      React.render(
+         <CommentBox data={data} />,
+        document.getElementById('content')
+      );
+
+      //state 传递
+      var CommentBoxState = React.createClass({
+        getInitialState: function() {
+          return {data: []};//在组建的生命周期中仅执行一次，设置组建的初始化状态。
+        },
+        render: function() {
+          return (
+            <div className="commentBox">
+              <h1>Comments</h1>
+              <CommentList data={this.state.data} />
+              <CommentForm />
+            </div>
+          );
+        }
+      });
+      React.render(
+         <CommentBox data={data} />,
+        document.getElementById('example')
+      );
+    </script>
+  </body>
+</html>
