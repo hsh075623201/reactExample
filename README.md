@@ -1,3 +1,3 @@
 # reactExample
 
-some example about
+some example about react
